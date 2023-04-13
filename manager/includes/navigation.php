@@ -132,11 +132,11 @@
                 <a href="clients.php">👤 Clients</a>
             </li>
             <li>
-                <a href=""><i class="fa fa-fw fa-edit"></i> Forms</a>
+                <a href="tutor applications.php">✉️ Tutor Applications</a>
             </li>
 
 
-            <li>
+            <!-- <li>
                 <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i>
                     Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
                 <ul id="demo" class="collapse">
@@ -147,7 +147,8 @@
                         <a href="#">Dropdown Item</a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
+
             <!-- <li class="active">
                         <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Blank Page</a>
                     </li>

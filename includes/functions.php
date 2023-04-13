@@ -2,7 +2,12 @@
 ?>
 <?php
 session_start();
-
+function get_result_from_db_query($query)
+{
+    global $connection;
+    $result = mysqli_query($connection, $query);
+    return $result;
+}
 function update_user_online_status()
 {
     global $connection;
@@ -125,7 +130,7 @@ function read_tuition_requests_with_id()
                         <h5 class="card-title">Tutor needed for</h5>
                         <h6 class="card-subtitle mb-2 text-muted"><?php echo $row['student class'] . ", " . $row['teaching location']; ?></h6>
                         <p class="card-text"> <?php echo "Subjects: " . $row['student subjects']; ?> </p>
-                        <a href="tuition info.php?edit=<?php echo $row['id']; ?>" class="card-link">See more details..</a>
+                        <a href="tuition info.php?id=<?php echo $row['id']; ?>" class="card-link">See more details..</a>
 
                     </div>
                 </div>
@@ -180,7 +185,7 @@ function read_tuition_requests_without_id()
                         <h5 class="card-title">Tutor needed for</h5>
                         <h6 class="card-subtitle mb-2 text-muted"><?php echo $row['student class'] . ", " . $row['teaching location']; ?></h6>
                         <p class="card-text"> <?php echo "Subjects: " . $row['student subjects']; ?> </p>
-                        <a href="tuition info.php?edit=<?php echo $row['asd']; ?>" class="card-link">See more details..</a>
+                        <a href="tuition info.php?id=<?php echo $row['asd']; ?>" class="card-link">See more details..</a>
 
                     </div>
                 </div>
@@ -225,7 +230,7 @@ function read_tuition_requests_with_id_LIMIT($num_of_rows_skipped, $num_of_resul
                         <h5 class="card-title">Tutor needed for</h5>
                         <h6 class="card-subtitle mb-2 text-muted"><?php echo $row['student class'] . ", " . $row['teaching location']; ?></h6>
                         <p class="card-text"> <?php echo "Subjects: " . $row['student subjects']; ?> </p>
-                        <a href="tuition info.php?edit=<?php echo $row['id']; ?>" class="card-link">See more details..</a>
+                        <a href="tuition info.php?id=<?php echo $row['id']; ?>" class="card-link">See more details..</a>
 
                     </div>
                 </div>
@@ -442,6 +447,59 @@ function edit_tuition_requests()
 
         <?php
         }
+    }
+}
+function read_tutor_applications()
+{
+    // Read all rows from 'tutor applications' table
+    global $connection;
+
+    $query = queryline("DESC `tutor application`");
+    $statement = mysqli_prepare($connection, $query);
+    mysqli_stmt_execute($statement);
+    $result = mysqli_stmt_get_result($statement);
+    echo "<tr>";
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "<th>";
+        echo $row['Field'];
+        echo "</th>";
+    }
+
+    echo "</tr>";
+
+
+    // $excluded_user_type = 'manager';
+    $query = queryline("SELECT * FROM `tutor application`");
+    // $query .= queryline("WHERE user_type != ? ");
+    $statement = mysqli_prepare($connection, $query);
+    // mysqli_stmt_bind_param($statement, 's', $excluded_user_type);
+    mysqli_stmt_execute($statement);
+    $result = mysqli_stmt_get_result($statement);
+
+
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $id = $row['id'];
+        echo "<tr>";
+        // foreach ($row as $key => $value) {
+        //     echo "<td>" . $value . "</td>";
+        // }
+        echo"<td>" . $id. "</td>";
+        $result2 = get_result_from_db_query("SELECT user_full_name from user WHERE user_id={$row['applicant_id']}");
+        while ($row2 = mysqli_fetch_assoc($result2)) {
+            echo "<td>" . $row2['user_full_name'] . "</td>";
+        }
+        
+        echo "<td><a href='../client/tuition info.php?id={$row['tuition_request_id']}'>" . $row['tuition_request_id'] . "</a></td>";
+
+        echo "<td>
+                 <a href='tutor applications.php?delete={$id}'>Delete</a>
+                 </td>";
+        echo "<td>
+                 <a href='tutor applications.php?edit={$id}'>Edit</a>
+                 </td>";
+
+        echo "</tr>";
     }
 }
 function read_clients()
@@ -666,7 +724,7 @@ function search_tuitions_by_location()
                                     <h5 class="card-title">Tutor needed for</h5>
                                     <h6 class="card-subtitle mb-2 text-muted"><?php echo $row['student class'] . ", " . $row['teaching location']; ?></h6>
                                     <p class="card-text"> <?php echo "Subjects: " . $row['student subjects']; ?> </p>
-                                    <a href="tuition info.php?edit=<?php echo $row['id']; ?>" class="card-link">See more details..</a>
+                                    <a href="tuition info.php?id=<?php echo $row['id']; ?>" class="card-link">See more details..</a>
 
                                 </div>
                             </div>
@@ -721,7 +779,7 @@ function search_tuitions_by_location_LIMIT($num_of_rows_skipped, $num_of_results
                                     <h5 class="card-title">Tutor needed for</h5>
                                     <h6 class="card-subtitle mb-2 text-muted"><?php echo $row['student class'] . ", " . $row['teaching location']; ?></h6>
                                     <p class="card-text"> <?php echo "Subjects: " . $row['student subjects']; ?> </p>
-                                    <a href="tuition info.php?edit=<?php echo $row['id']; ?>" class="card-link">See more details..</a>
+                                    <a href="tuition info.php?id=<?php echo $row['id']; ?>" class="card-link">See more details..</a>
 
                                 </div>
                             </div>

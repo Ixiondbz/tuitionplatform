@@ -50,9 +50,10 @@ if (is_logged_in()) {
 
             <!-- Tuition Sidebar Widgets Column -->
             <div class="">
-
+            <h2>Profile</h2>
                 <!-- Tuition Search Well -->
                 <div class="well">
+                    
                     <form action="profile.php" method="post" enctype="multipart/form-data">
 
                         <div class="form-group">

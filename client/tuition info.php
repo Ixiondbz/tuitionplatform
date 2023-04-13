@@ -37,7 +37,7 @@ connect_to_db();
                     <div class="row " style="margin-left:30%;">
                         <?php
                         if (is_method('get')) {
-                            $tuition_id = escape_special_characters($_GET['edit']);
+                            $tuition_id = escape_special_characters($_GET['id']);
                             // echo $tuition_id;
                             $query = queryline("SELECT `student class`,`student subjects`,`teaching location`,`additional notes` FROM `tuition request`");
                             $query .= queryline("WHERE id='{$tuition_id}'");
@@ -55,7 +55,7 @@ connect_to_db();
                                             <p class="card-text"> <?php echo "Subjects: " . $row['student subjects']; ?> </p>
                                             <p class="card-text"> <?php echo "Teaching location: " . $row['teaching location']; ?> </p>
                                             <p class="card-text"> <?php echo "Notes: " . $row['additional notes']; ?> </p>
-                                            <!-- <a href="" class="card-link"><button>Apply</button></a> -->
+                                            <a href="tutor application.php?id=<?php echo $tuition_id; ?>" class="card-link"><button>Apply</button></a>
 
                                         </div>
                                     </div>
