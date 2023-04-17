@@ -22,7 +22,7 @@ include "includes/header.php";
 
 
                     <?php
-                    read_tutor_applications();
+                    read_all_tutor_applications();
                     ?>
 
                 </table>

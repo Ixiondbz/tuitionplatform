@@ -19,7 +19,7 @@ include "includes/header.php";
                 <div class="container-fluid">
                     <div class="col-xs-13">
                         <table class="table table-bordered table-hover">
-                            <tr>
+                            <!-- <tr>
                                 <th>id</th>
                                 <th>parent name</th>
                                 <th>student name</th>
@@ -27,21 +27,21 @@ include "includes/header.php";
                                 <th>subjects</th>
                                 <th>location</th>
                                 <th>additional notes</th>
-                            </tr>
+                            </tr> -->
 
                             <?php
-                            read_tuition_requests();
+                            read_all_tuition_requests();
                             ?>
 
 
                         </table>
                     </div>
                     <?php
-                    delete_tuition_requests();
+                    delete_tuition_request();
 
                     edit_tuition_requests();
 
-                    update_tuition_requests();
+                    update_tuition_request();
                     ?>
 
                 </div>

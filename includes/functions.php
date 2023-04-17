@@ -2,19 +2,22 @@
 ?>
 <?php
 session_start();
+
+/* sends any query to the database and returns the results */
 function get_result_from_db_query($query)
 {
     global $connection;
     $result = mysqli_query($connection, $query);
     return $result;
 }
+
+/* updates the browser's session time in db OR creates a new session and time in db if session doesn't exist in db*/
 function update_user_online_status()
 {
     global $connection;
+
     $session = session_id();
     $time = time();
-    $time_out_in_seconds = 60;
-    $time_out = $time - $time_out_in_seconds;
 
     $query = queryline("SELECT * FROM users_online WHERE session = '$session'");
     $send_query = mysqli_query($connection, $query);
@@ -26,6 +29,8 @@ function update_user_online_status()
         mysqli_query($connection, "UPDATE users_online SET time='$time' WHERE session='$session'");
     }
 }
+
+/* returns the total count of clients who are online */
 function count_clients_online()
 {
     global $connection;
@@ -36,6 +41,8 @@ function count_clients_online()
     $count_user = mysqli_num_rows($users_online_query);
     return $count_user;
 }
+
+/* makes a connection between php and a sql database */
 function connect_to_db()
 {
     global $connection;
@@ -44,33 +51,46 @@ function connect_to_db()
         echo "Failed to connect to database! 😥";
     }
 }
+
+/* appends the string in function's argument with space character '' and returns it
+this helps to avoid the need to append space when we are appending parts of a single query line by line */
 function queryline($query_string)
 {
     return $query_string . " ";
 }
 
+/* appends the string in function's argument with a html line break tag <br> */
 function echobr($string_var)
 {
-    echo $string_var;
-    echo "<br>";
+    echo $string_var . "<br>";
 }
 
-/* this is more manager page */
-function read_tuition_requests()
+/* reads all tuition requests from db and displays them in HTML table for manager page */
+function read_all_tuition_requests()
 {
     global $connection;
-    // GET INFO FROM DATABASE
-    $query = queryline("SELECT * FROM `tuition request`");
+    // reads column names from db
+    $column_names = get_result_from_db_query("DESC `tuition request`");
 
-    $result = mysqli_query($connection, $query);
+    /* generates heading for the table */
+    echo "<tr>";
+    while ($row = mysqli_fetch_assoc($column_names)) {
+        echo "<th>";
+        echo $row['Field'];
+        echo "</th>";
+    }
+    echo "</tr>";
+    /***********************************/
 
-    if (!$result) {
+
+    // reads all tuition requests from db
+    $all_tuition_requests = get_result_from_db_query("SELECT * FROM `tuition request`");
+
+    if (!$all_tuition_requests) {
         die("Query Failed" . mysqli_error($connection));
     } else {
-        while ($row = mysqli_fetch_assoc($result)) {
-
+        while ($row = mysqli_fetch_assoc($all_tuition_requests)) {
             $id = $row['id'];
-
 ?>
             <tr>
                 <?php
@@ -102,7 +122,9 @@ function read_tuition_requests()
         }
     }
 }
-function read_tuition_requests_with_id()
+
+/* reads all tuition requests and displays them in HTML for client side*/
+function read_all_tuition_requests_for_client_view()
 {
     global $connection;
     // GET INFO FROM DATABASE
@@ -157,7 +179,7 @@ function get_count_of_records_in_a_table($table)
     }
     return $count_of_records_in_the_table;
 }
-function read_tuition_requests_without_id()
+function read_all_tuition_requests_without_id()
 {
     global $connection;
     // GET INFO FROM DATABASE
@@ -201,21 +223,21 @@ function read_tuition_requests_without_id()
         }
     }
 }
-function read_tuition_requests_with_id_LIMIT($num_of_rows_skipped, $num_of_results)
+
+/* reads limited number of tuition requests and displays them in HTML for client side*/
+function read_limited_tuition_requests_for_client_view($num_of_rows_skipped, $num_of_results)
 {
     global $connection;
     // GET INFO FROM DATABASE
-    $query = queryline("SELECT `id`,`student class`, `student subjects`, 
-    `teaching location` 
-    FROM `tuition request`");
+    $query = queryline("SELECT `id`,`student class`, `student subjects`,`teaching location` FROM `tuition request`");
     $query .= queryline("LIMIT $num_of_rows_skipped,$num_of_results");
 
-    $result = mysqli_query($connection, $query);
+    $limited_tuition_requests = get_result_from_db_query($query);
 
-    if (!$result) {
+    if (!$limited_tuition_requests) {
         die("Query Failed" . mysqli_error($connection));
     } else {
-        while ($row = mysqli_fetch_assoc($result)) {
+        while ($row = mysqli_fetch_assoc($limited_tuition_requests)) {
 
         ?>
 
@@ -246,6 +268,8 @@ function read_tuition_requests_with_id_LIMIT($num_of_rows_skipped, $num_of_resul
         }
     }
 }
+
+/* escape special characters frokm string to prepare them for database queries and return them  */
 function escape_special_characters($string_with_special_characters)
 {
     global $connection;
@@ -253,7 +277,9 @@ function escape_special_characters($string_with_special_characters)
     $string_without_special_characters = mysqli_real_escape_string($connection, $string_with_special_characters);
     return $string_without_special_characters;
 }
-function update_tuition_requests()
+
+/* updates a particular tuition request by using its unique id */
+function update_tuition_request()
 {
     /* This function receives the post request of the selected id(row in the table)
         and updates it in the db table
@@ -278,17 +304,19 @@ function update_tuition_requests()
         `teaching location`='{$teaching_location}', `additional notes`='{$additional_notes}'
         WHERE id={$edit_id} ");
 
-        $update_query = mysqli_query($connection, $query);
+        $update_query = get_result_from_db_query($query);
 
         if (!$update_query) {
             die("QUERY FAILED");
         } else {
             // echo "Query successful 😄";
-            echo "Updated 😄. <a href='../client/tuition info.php?edit=" . $edit_id . "'>View the post</a>";
+            echo "Updated 😄. <a href='../client/tuition info.php?id=" . $edit_id . "'>View the post</a>";
         }
     }
 }
-function update_clients()
+
+/* updates a particular client's information by using its unique id */
+function update_client()
 {
     /* This function receives the post request of the selected id(row in the table)
         and updates it in the db table
@@ -308,12 +336,13 @@ function update_clients()
 
         move_uploaded_file($user_image_temp, "../images/$user_image");
 
+        /* ensures empty image path isn't saved when no file is selected */
         if (empty($user_image)) {
-            $query = queryline("SELECT user_image FROM user WHERE user_id=$user_id");
-            $user_image = mysqli_query($connection, $query);
+            $user_image = get_result_from_db_query("SELECT user_image FROM user WHERE user_id=$user_id");
             $row = mysqli_fetch_row($user_image);
             $user_image = $row[0];
         }
+        /* ************************************************************ */
 
         $query = queryline("UPDATE `user` 
         SET `user_full_name`='{$user_full_name}', `user_email`='{$user_email}',
@@ -321,7 +350,7 @@ function update_clients()
         `user_image`='{$user_image}'
         WHERE user_id={$user_id} ");
 
-        $update_query = mysqli_query($connection, $query);
+        $update_query = get_result_from_db_query($query);
 
         if (!$update_query) {
             die("QUERY FAILED");
@@ -332,11 +361,13 @@ function update_clients()
     }
 }
 
+/*  */
 function get_tuition_info()
 {
 }
 
-function update_profile()
+/*  updates the profile information of a user */
+function update_profile_information()
 {
     global $connection;
     global $email, $phone;
@@ -388,15 +419,14 @@ function update_profile()
         echo "Saved 😊. <a href='profile.php'>Reload</a> ";
     }
 }
+
+/* generates HTML text boxes prefilled with the info of a particular tuition request using its unique id */
 function edit_tuition_requests()
 {
-    /* This function generates a form of text boxes prefilled with the information of the selected id(row in the table)*/
-    global $connection;
     // EDIT QUERY
     if (isset($_GET['edit'])) {
         $edit_id = $_GET['edit'];
-        $query = queryline("SELECT * FROM `tuition request` WHERE id={$edit_id}");
-        $tuition_request = mysqli_query($connection, $query);
+        $tuition_request = get_result_from_db_query("SELECT * FROM `tuition request` WHERE id={$edit_id}");
 
         // GENERATE TEXT BOXES SHOWING INFO OF THE SELECTED ROW
         while ($row = mysqli_fetch_assoc($tuition_request)) {
@@ -449,7 +479,9 @@ function edit_tuition_requests()
         }
     }
 }
-function read_tutor_applications()
+
+/* reads tutor applications and displays them in HTML for manager page  */
+function read_all_tutor_applications()
 {
     // Read all rows from 'tutor applications' table
     global $connection;
@@ -484,12 +516,12 @@ function read_tutor_applications()
         // foreach ($row as $key => $value) {
         //     echo "<td>" . $value . "</td>";
         // }
-        echo"<td>" . $id. "</td>";
+        echo "<td>" . $id . "</td>";
         $result2 = get_result_from_db_query("SELECT user_full_name from user WHERE user_id={$row['applicant_id']}");
         while ($row2 = mysqli_fetch_assoc($result2)) {
             echo "<td>" . $row2['user_full_name'] . "</td>";
         }
-        
+
         echo "<td><a href='../client/tuition info.php?id={$row['tuition_request_id']}'>" . $row['tuition_request_id'] . "</a></td>";
 
         echo "<td>
@@ -502,7 +534,9 @@ function read_tutor_applications()
         echo "</tr>";
     }
 }
-function read_clients()
+
+/* reads all clients' information and display them in HTML for manager page */
+function read_all_clients()
 {
     // Read all rows from 'user' table such that it doesn't have 'manager' as its user_type
     global $connection;
@@ -558,7 +592,8 @@ function read_clients()
     }
 }
 
-function delete_clients()
+/* delete a client from db for manager page */
+function delete_client()
 {
     global $connection;
     // DELETE QUERY
@@ -571,7 +606,8 @@ function delete_clients()
     }
 }
 
-function edit_clients()
+/* generates HTML text boxes prefilled with the info of a particular client using its unique id */
+function edit_client()
 {
     /* This function generates a form of text boxes prefilled with the information of the selected id(row in the table)*/
     global $connection;
@@ -674,9 +710,8 @@ function edit_clients()
     }
 }
 
-
-
-function delete_tuition_requests()
+/* delete a tuition request from db for manager page */
+function delete_tuition_request()
 {
     global $connection;
     // DELETE QUERY
@@ -689,6 +724,7 @@ function delete_tuition_requests()
     }
 }
 
+/* search tuitions from the db by their teaching location */
 function search_tuitions_by_location()
 {
     global $connection;
@@ -743,7 +779,8 @@ function search_tuitions_by_location()
     }
 }
 
-function search_tuitions_by_location_LIMIT($num_of_rows_skipped, $num_of_results)
+/* search for limited number of tuitions from the db by their teaching location  */
+function search_limited_tuitions_by_location_for_client_view($num_of_rows_skipped, $num_of_results)
 {
     global $connection;
 
@@ -798,6 +835,7 @@ function search_tuitions_by_location_LIMIT($num_of_rows_skipped, $num_of_results
     }
 }
 
+/* return total count of tuition of requests from db by teaching location */
 function get_count_of_records_in_tuitions_by_location($location)
 {
     global $connection;
@@ -811,22 +849,14 @@ function get_count_of_records_in_tuitions_by_location($location)
     return $count_of_records_in_the_table;
 }
 
-function is_method($method = null)
-{
-    if ($_SERVER['REQUEST_METHOD'] == strtoupper($method)) {
-
-        return true;
-    }
-
-    return false;
-}
-
+/* redirects to the page specified in function argument, from the current url */
 function redirect($location)
 {
     header("Location:" . $location);
     exit;
 }
 
+/* authenticates the user identity and logs them in using the function arguments */
 function login_user($email_or_phone, $password)
 {
     global $connection;
@@ -870,6 +900,8 @@ function login_user($email_or_phone, $password)
 
     return true;
 }
+
+/* returns the function argument if it is a valid email id, else it returns an empty string  */
 function get_email_or_blank($str)
 {
     $email_regex = '/^(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){255,})(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){65,}@)(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E\\pL\\pN]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F\\pL\\pN]|(?:\\x5C[\\x00-\\x7F]))*\\x22))(?:\\.(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E\\pL\\pN]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F\\pL\\pN]|(?:\\x5C[\\x00-\\x7F]))*\\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-+[a-z0-9]+)*\\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-+[a-z0-9]+)*)|(?:\\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\\]))$/iDu';
@@ -878,6 +910,8 @@ function get_email_or_blank($str)
     }
     return '';
 }
+
+/* returns the function argument if it is a valid Bangladeshi phone number, else it returns an empty string  */
 function get_phone_or_blank($str)
 {
     $phone_regex = '/(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/';
@@ -886,6 +920,8 @@ function get_phone_or_blank($str)
     }
     return '';
 }
+
+/* registers the user in the database */
 function register_user($email_or_phone, $password)
 {
 
@@ -911,10 +947,24 @@ function register_user($email_or_phone, $password)
     echo "Registration successful! You can Login now. 😊";
 }
 
+/* returns true if the http request method in function argument is sent by the server */
+function is_method($method = null)
+{
+    if ($_SERVER['REQUEST_METHOD'] == strtoupper($method)) {
+
+        return true;
+    }
+
+    return false;
+}
+
+/* returns true if a user is logged in */
 function is_logged_in()
 {
     return (isset($_SESSION['user_email']) or isset($_SESSION['user_phone']));
 }
+
+/* returns true if a user is a manager and also logged in */
 function is_manager()
 {
     return is_logged_in() and ($_SESSION['user_type'] === 'manager');

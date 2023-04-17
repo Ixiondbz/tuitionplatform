@@ -24,7 +24,7 @@ if (is_logged_in()) {
     global $email, $phone;
     $email = $user_email;
     $phone = $user_phone;
-    update_profile();
+    update_profile_information();
 } else
     redirect('index.php');
 ?>

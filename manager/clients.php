@@ -22,14 +22,14 @@ include "includes/header.php";
 
 
                     <?php
-                    read_clients();
+                    read_all_clients();
                     ?>
 
                 </table>
                 <?php
-                delete_clients();
-                edit_clients();
-                update_clients();
+                delete_client();
+                edit_client();
+                update_client();
                 ?>
             </div>
 

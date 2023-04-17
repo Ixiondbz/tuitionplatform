@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 12, 2023 at 09:04 AM
+-- Generation Time: Apr 17, 2023 at 08:31 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -51,6 +51,28 @@ INSERT INTO `tuition request` (`id`, `parent name`, `student name`, `student cla
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tutor application`
+--
+
+CREATE TABLE `tutor application` (
+  `id` int(11) NOT NULL,
+  `applicant_id` int(11) NOT NULL,
+  `tuition_request_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tutor application`
+--
+
+INSERT INTO `tutor application` (`id`, `applicant_id`, `tuition_request_id`) VALUES
+(4, 11, 56),
+(5, 11, 66),
+(6, 11, 68),
+(7, 12, 56);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user`
 --
 
@@ -69,8 +91,29 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `user_full_name`, `user_email`, `user_phone`, `user_type`, `user_password`, `user_image`) VALUES
-(11, 'ixion Chowdhury', 'ixion@gmail.com', '+8801771064027', 'tutor', '$2y$12$4ZnnGwxkVC4JtlvjJ6vBo./dWLei9Q2b4Kxf8g367hmBh2eMfbFNW', 'ProfilePic 382KB.jpg'),
-(12, 'manager', 'manager@gmail.com', '', 'manager', '$2y$12$9uqgP3IBhAqFTPEPoQYabuo72/33JiBRmXm5Fry5Z8TcE/f9L3QRS', 'ProfilePic 382KB.jpg');
+(11, 'Ixion Chowdhury', 'ixion@gmail.com', '+8801771064027', 'tutor', '$2y$12$4ZnnGwxkVC4JtlvjJ6vBo./dWLei9Q2b4Kxf8g367hmBh2eMfbFNW', 'ProfilePic 382KB.jpg'),
+(12, 'manager01', 'manager@gmail.com', '+8801771064028', 'manager', '$2y$12$9uqgP3IBhAqFTPEPoQYabuo72/33JiBRmXm5Fry5Z8TcE/f9L3QRS', 'manager logo.avif'),
+(15, 'muaz', 'muaz@gmail.com', '+8801771064029', 'tutor', '$2y$12$/GqBs8fPPUM2gGVmk.VoUeibhyoIYMW5mD7p2FviJ0DpZpI12/qdS', 'muaz.jpg'),
+(16, 'roy', 'roy@gmail.com', '+8801771064030', 'tutor', '$2y$12$sLw6VZgA9kyF70IrhittaOvZo7wc0U2hRNcizQ3P5yyW.TJj0usFK', 'roy.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users_online`
+--
+
+CREATE TABLE `users_online` (
+  `id` int(11) NOT NULL,
+  `session` varchar(255) NOT NULL,
+  `time` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users_online`
+--
+
+INSERT INTO `users_online` (`id`, `session`, `time`) VALUES
+(70, '6u1gfu0l0tr72dtg843lbhukpn', 1681713046);
 
 -- --------------------------------------------------------
 
@@ -102,12 +145,24 @@ ALTER TABLE `tuition request`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tutor application`
+--
+ALTER TABLE `tutor application`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `email` (`user_email`),
   ADD UNIQUE KEY `phone` (`user_phone`);
+
+--
+-- Indexes for table `users_online`
+--
+ALTER TABLE `users_online`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `user type`
@@ -127,10 +182,22 @@ ALTER TABLE `tuition request`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
+-- AUTO_INCREMENT for table `tutor application`
+--
+ALTER TABLE `tutor application`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `users_online`
+--
+ALTER TABLE `users_online`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT for table `user type`

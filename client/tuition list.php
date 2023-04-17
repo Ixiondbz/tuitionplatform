@@ -44,7 +44,7 @@ connect_to_db();
                                         $page_1 = ($page * $num_of_results) - $num_of_results;
                                     }
 
-                                    read_tuition_requests_with_id_LIMIT($page_1, $num_of_results);
+                                    read_limited_tuition_requests_for_client_view($page_1, $num_of_results);
                                     ?>
                                 </div>
 
