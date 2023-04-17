@@ -107,8 +107,15 @@ function read_all_tuition_requests()
 
                 ?>
                 <?php
+                // echo "<td>
+                //  <a href='tuition requests.php?delete={$id}'>Delete</a>
+                //  </td>";
+                // echo "<td>
+                //  <a href='tuition requests.php?delete={$id}'>Delete</a>
+                //  </td>";
                 echo "<td>
-                 <a href='tuition requests.php?delete={$id}'>Delete</a>
+                 <a rel='$id' href='javascript:void(0)' class='delete_link'>Delete</a>
+                 <a rel='$id' href='javascript:void(0)' class='delete_link'>Delete</a>
                  </td>";
                 echo "<td>
                  <a href='tuition requests.php?edit={$id}'>Edit</a>
@@ -421,7 +428,7 @@ function update_profile_information()
 }
 
 /* generates HTML text boxes prefilled with the info of a particular tuition request using its unique id */
-function edit_tuition_requests()
+function edit_tuition_request()
 {
     // EDIT QUERY
     if (isset($_GET['edit'])) {
@@ -445,31 +452,46 @@ function edit_tuition_requests()
                                                                 echo $id;
                                                             } ?>" />
 
+                <div class="form-group">
+                    <label for="">Parent Name</label>
+                    <input value="<?php if (isset($parent_name)) {
+                                        echo $parent_name;
+                                    } ?>" type="text" name="parent_name" id="">
+                </div>
+                <div class="form-group">
+                    <label for="">Student Name</label>
+                    <input value="<?php if (isset($student_name)) {
+                                        echo $student_name;
+                                    } ?>" type="text" name="student_name" id="">
+                </div>
 
-                <input value="<?php if (isset($parent_name)) {
-                                    echo $parent_name;
-                                } ?>" type="text" name="parent_name" id="">
+                <div class="form-group">
+                    <label for="">Student Class</label>
+                    <input value="<?php if (isset($student_class)) {
+                                        echo $student_class;
+                                    } ?>" type="text" name="student_class" id="">
+                </div>
 
-                <input value="<?php if (isset($student_name)) {
-                                    echo $student_name;
-                                } ?>" type="text" name="student_name" id="">
+                <div class="form-group">
+                    <label for="">Student Subjects</label>
+                    <input value="<?php if (isset($student_subjects)) {
+                                        echo $student_subjects;
+                                    } ?>" type="text" name="student_subjects" id="">
+                </div>
 
-                <input value="<?php if (isset($student_class)) {
-                                    echo $student_class;
-                                } ?>" type="text" name="student_class" id="">
-
-                <input value="<?php if (isset($student_subjects)) {
-                                    echo $student_subjects;
-                                } ?>" type="text" name="student_subjects" id="">
-
-                <input value="<?php if (isset($teaching_location)) {
-                                    echo $teaching_location;
-                                } ?>" type="text" name="teaching_location" id="">
-
-                <input value="<?php if (isset($additional_notes)) {
-                                    echo $additional_notes;
-                                } ?>" type="text" name="additional_notes" id="">
-
+                <div class="form-group">
+                    <label for="">Teaching Location</label>
+                    <input value="<?php if (isset($teaching_location)) {
+                                        echo $teaching_location;
+                                    } ?>" type="text" name="teaching_location" id="">
+                </div>
+                <div class="form-group">
+                    <label for="">Additional Notes</label>
+                    
+                   <textarea name="additional_notes" id="" cols="30" rows="10"><?php if (isset($additional_notes)) {
+                                        echo $additional_notes;
+                                    } ?></textarea>    
+            </div>
 
                 <input type="submit" name="update" value="update">
 
@@ -525,15 +547,31 @@ function read_all_tutor_applications()
         echo "<td><a href='../client/tuition info.php?id={$row['tuition_request_id']}'>" . $row['tuition_request_id'] . "</a></td>";
 
         echo "<td>
-                 <a href='tutor applications.php?delete={$id}'>Delete</a>
+                 <a rel='$id' href='javascript:void(0)' class='delete_link'>Delete</a>
+                 <a rel='$id' href='javascript:void(0)' class='delete_link'>Delete</a>
                  </td>";
-        echo "<td>
-                 <a href='tutor applications.php?edit={$id}'>Edit</a>
-                 </td>";
+        // echo "<td>
+        //          <a href='tutor applications.php?edit={$id}'>Edit</a>
+        //          </td>";
 
         echo "</tr>";
     }
 }
+
+/* deletes a particular tutor application by using its unique id */
+function delete_tutor_application()
+{
+    global $connection;
+    // DELETE QUERY
+    if (isset($_GET['delete'])) {
+        $delete_id = $_GET['delete'];
+        $query = queryline("DELETE FROM `tutor application` WHERE id={$delete_id}");
+        $delete_query = mysqli_query($connection, $query);
+        echo "Deleted successfully";
+        header("Location: tutor applications.php");
+    }
+}
+
 
 /* reads all clients' information and display them in HTML for manager page */
 function read_all_clients()
@@ -582,7 +620,8 @@ function read_all_clients()
             }
         }
         echo "<td>
-                 <a href='clients.php?delete={$user_id}'>Delete</a>
+                 <a rel='$user_id' href='javascript:void(0)' class='delete_link'>Delete</a>
+                 <a rel='$user_id' href='javascript:void(0)' class='delete_link'>Delete</a>
                  </td>";
         echo "<td>
                  <a href='clients.php?edit={$user_id}'>Edit</a>
@@ -599,7 +638,8 @@ function delete_client()
     // DELETE QUERY
     if (isset($_GET['delete'])) {
         $delete_id = $_GET['delete'];
-        $query = queryline("DELETE FROM `user` WHERE id={$delete_id}");
+        $query = queryline("DELETE FROM `user` WHERE user_id={$delete_id}");
+        $query = queryline("DELETE FROM `user` WHERE user_id={$delete_id}");
         $delete_query = mysqli_query($connection, $query);
         echo "Deleted successfully";
         header("Location: clients.php");

@@ -16,7 +16,7 @@ include "includes/header.php";
         <div id="page-wrapper">
 
             <div class="container-fluid">
-
+            <?php include "../includes/delete_modal.php"; ?>
                 <table class="table table-bordered table-hover">
 
 
@@ -40,7 +40,16 @@ include "includes/header.php";
 
         <!-- Bootstrap Core JavaScript -->
         <script src="js/bootstrap.min.js"></script>
-
+        <script>
+            $(document).ready(function() {
+                $(".delete_link").on('click', function() {
+                    var id = $(this).attr("rel");
+                    var delete_url = "clients.php?delete=" + id + "";
+                    $(".modal_delete_link").attr("href", delete_url);
+                    $("#myModal").modal('show');
+                });
+            })
+        </script>
 
 
 

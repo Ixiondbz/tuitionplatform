@@ -17,6 +17,7 @@ include "includes/header.php";
         <div id="page-wrapper">
             <div class="row">
                 <div class="container-fluid">
+                    <?php include "../includes/delete_modal.php"; ?>
                     <div class="col-xs-13">
                         <table class="table table-bordered table-hover">
                             <!-- <tr>
@@ -39,7 +40,7 @@ include "includes/header.php";
                     <?php
                     delete_tuition_request();
 
-                    edit_tuition_requests();
+                    edit_tuition_request();
 
                     update_tuition_request();
                     ?>
@@ -54,6 +55,17 @@ include "includes/header.php";
 
         <!-- Bootstrap Core JavaScript -->
         <script src="js/bootstrap.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $(".delete_link").on('click', function() {
+                    var id = $(this).attr("rel");
+                    var delete_url = "tuition requests.php?delete=" + id + "";
+                    $(".modal_delete_link").attr("href", delete_url);
+                    $("#myModal").modal('show');
+                });
+            })
+        </script>
     </div>
 
 
