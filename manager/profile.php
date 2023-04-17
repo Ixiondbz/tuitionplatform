@@ -52,7 +52,7 @@ connect_to_db();
                             global $email, $phone;
                             $email = $user_email;
                             $phone = $user_phone;
-                            update_profile();
+                            update_profile_information();
                         } else
                             redirect('index.php');
                         ?>
