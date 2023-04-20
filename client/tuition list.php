@@ -31,7 +31,7 @@ connect_to_db();
                             <div class="container">
                                 <div class="row">
                                     <?php
-                                    $num_of_results = 3;
+                                    $num_of_results = 4;
                                     if (isset($_GET['page'])) {
                                         $page = $_GET['page'];
                                     } else {

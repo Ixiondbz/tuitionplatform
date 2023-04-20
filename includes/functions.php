@@ -115,7 +115,6 @@ function read_all_tuition_requests()
                 //  </td>";
                 echo "<td>
                  <a rel='$id' href='javascript:void(0)' class='delete_link'>Delete</a>
-                 <a rel='$id' href='javascript:void(0)' class='delete_link'>Delete</a>
                  </td>";
                 echo "<td>
                  <a href='tuition requests.php?edit={$id}'>Edit</a>
@@ -487,11 +486,11 @@ function edit_tuition_request()
                 </div>
                 <div class="form-group">
                     <label for="">Additional Notes</label>
-                    
-                   <textarea name="additional_notes" id="" cols="30" rows="10"><?php if (isset($additional_notes)) {
-                                        echo $additional_notes;
-                                    } ?></textarea>    
-            </div>
+
+                    <textarea name="additional_notes" id="" cols="30" rows="10"><?php if (isset($additional_notes)) {
+                                                                                    echo $additional_notes;
+                                                                                } ?></textarea>
+                </div>
 
                 <input type="submit" name="update" value="update">
 
@@ -535,9 +534,7 @@ function read_all_tutor_applications()
     while ($row = mysqli_fetch_assoc($result)) {
         $id = $row['id'];
         echo "<tr>";
-        // foreach ($row as $key => $value) {
-        //     echo "<td>" . $value . "</td>";
-        // }
+
         echo "<td>" . $id . "</td>";
         $result2 = get_result_from_db_query("SELECT user_full_name from user WHERE user_id={$row['applicant_id']}");
         while ($row2 = mysqli_fetch_assoc($result2)) {
@@ -548,11 +545,8 @@ function read_all_tutor_applications()
 
         echo "<td>
                  <a rel='$id' href='javascript:void(0)' class='delete_link'>Delete</a>
-                 <a rel='$id' href='javascript:void(0)' class='delete_link'>Delete</a>
                  </td>";
-        // echo "<td>
-        //          <a href='tutor applications.php?edit={$id}'>Edit</a>
-        //          </td>";
+
 
         echo "</tr>";
     }
@@ -620,7 +614,6 @@ function read_all_clients()
             }
         }
         echo "<td>
-                 <a rel='$user_id' href='javascript:void(0)' class='delete_link'>Delete</a>
                  <a rel='$user_id' href='javascript:void(0)' class='delete_link'>Delete</a>
                  </td>";
         echo "<td>
